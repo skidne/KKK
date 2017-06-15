@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class BackgroundController : MonoBehaviour {
@@ -8,14 +9,15 @@ public class BackgroundController : MonoBehaviour {
 
     void Update()
     {
+        Rect _uvRect;
         for (int i = 0; i < backgrounds.Length; i++)
         {
-            Vector3 newOffset = backgrounds[i].backgroundGO.GetComponent<MeshRenderer>().material.mainTextureOffset;
+            _uvRect = backgrounds[i].backgroundGO.GetComponent<RawImage>().uvRect;
             if (backgrounds[i].bgDirection == BackgroundDirections.Horizontal)
-                newOffset.x -= generalSpeed * backgrounds[i].parallax * Time.deltaTime;
+                _uvRect.x += generalSpeed * backgrounds[i].parallax * Time.deltaTime;
             else
-                newOffset.y -= generalSpeed * backgrounds[i].parallax * Time.deltaTime;
-            backgrounds[i].backgroundGO.GetComponent<MeshRenderer>().material.mainTextureOffset = newOffset;
+                _uvRect.y += generalSpeed * backgrounds[i].parallax * Time.deltaTime;
+            backgrounds[i].backgroundGO.GetComponent<RawImage>().uvRect = _uvRect;
         }
     }
 }
@@ -23,7 +25,7 @@ public class BackgroundController : MonoBehaviour {
 [System.Serializable]
 public class BackgroundClass
 {
-    public Transform backgroundGO;
+    public RawImage backgroundGO;
     public float parallax;
     public BackgroundDirections bgDirection;
 }
