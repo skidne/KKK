@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 69e2da6d9e7b6f547b46469f9465794b
-timeCreated: 1497553328
+timeCreated: 1497696266
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -12,11 +12,14 @@ TextureImporter:
     21300010: main_astro_5
     21300012: main_astro_6
     21300014: main_astro_7
-    21300016: main_astro_8
+    21300016: main_astro_13
     21300018: main_astro_9
     21300020: main_astro_10
     21300022: main_astro_11
     21300024: main_astro_12
+    21300026: main_astro_14
+    21300028: main_astro_15
+    21300030: main_astro_16
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -170,19 +173,6 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: main_astro_8
-      rect:
-        serializedVersion: 2
-        x: 45
-        y: 106
-        width: 167
-        height: 432
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
       name: main_astro_9
       rect:
         serializedVersion: 2
@@ -191,7 +181,7 @@ TextureImporter:
         width: 110
         height: 320
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -204,7 +194,7 @@ TextureImporter:
         width: 113
         height: 324
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -230,7 +220,59 @@ TextureImporter:
         width: 12
         height: 4
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: main_astro_13
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 440
+        width: 130
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: main_astro_14
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 340
+        width: 130
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: main_astro_15
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 235
+        width: 130
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: main_astro_16
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 135
+        width: 130
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0

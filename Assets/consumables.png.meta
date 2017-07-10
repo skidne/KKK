@@ -1,0 +1,148 @@
+fileFormatVersion: 2
+guid: e6205b8f5f1d6774da38ca29be77bae4
+timeCreated: 1499552640
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: O2Glow
+    21300002: consumables_1
+    21300004: O2Simple
+    21300006: SimplePotato
+    21300008: consumables_4
+    21300010: consumables_5
+    21300012: consumables_6
+    21300014: PoisonPotato(Glow)
+    21300016: consumables_8
+    21300018: PoisonPotato
+    21300020: consumables_10
+    21300022: consumables_11
+    21300024: consumables_12
+    21300026: consumables_13
+    21300028: consumables_14
+    21300030: consumables_15
+    21300032: consumables_16
+    21300034: consumables_17
+    21300036: consumables_18
+    21300038: consumables_19
+    21300040: consumables_20
+    21300042: consumables_21
+    21300044: consumables_22
+    21300046: consumables_23
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: O2Glow
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 765
+        width: 500
+        height: 600
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: O2Simple
+      rect:
+        serializedVersion: 2
+        x: 570
+        y: 765
+        width: 500
+        height: 600
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SimplePotato
+      rect:
+        serializedVersion: 2
+        x: 1274
+        y: 780
+        width: 500
+        height: 600
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: PoisonPotato(Glow)
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 60
+        width: 500
+        height: 600
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: PoisonPotato
+      rect:
+        serializedVersion: 2
+        x: 970
+        y: 60
+        width: 500
+        height: 600
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

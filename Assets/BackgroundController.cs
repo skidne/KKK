@@ -4,8 +4,13 @@ using System.Collections;
 
 public class BackgroundController : MonoBehaviour {
 
-    public float generalSpeed;
+    private GameManager _gameManager;
     public BackgroundClass[] backgrounds;
+
+    void Start()
+    {
+        _gameManager = gameObject.GetComponent<GameManager>();
+    }
 
     void Update()
     {
@@ -14,9 +19,9 @@ public class BackgroundController : MonoBehaviour {
         {
             _uvRect = backgrounds[i].backgroundGO.GetComponent<RawImage>().uvRect;
             if (backgrounds[i].bgDirection == BackgroundDirections.Horizontal)
-                _uvRect.x += generalSpeed * backgrounds[i].parallax * Time.deltaTime;
+                _uvRect.x += _gameManager.generalSpeed * backgrounds[i].parallax * Time.deltaTime;
             else
-                _uvRect.y += generalSpeed * backgrounds[i].parallax * Time.deltaTime;
+                _uvRect.y += _gameManager.generalSpeed * backgrounds[i].parallax * Time.deltaTime;
             backgrounds[i].backgroundGO.GetComponent<RawImage>().uvRect = _uvRect;
         }
     }

@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         playerAnimator = GetComponent<Animator>();
-        minDragDistance = Screen.height * 15 / 100;
+        minDragDistance = Screen.height * 7 / 100;
         moveDistance = GameObject.Find("MainCanvas").GetComponent<RectTransform>().rect.width / 3;
         //canMove = true;
         states = new Vector3[3];
@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
 
     void Move(Positions dir)
     {
-        float timeDelta = .2f;
+        float timeDelta = .1f;
         int nextDir;
 
         if ((int)dir > (int)currentPos)
@@ -104,6 +104,7 @@ public class PlayerController : MonoBehaviour
         transform.localPosition = target;
     }
 }
+
 
 
 public enum Positions
