@@ -14,15 +14,16 @@ public class BackgroundController : MonoBehaviour {
 
     void Update()
     {
-        Rect _uvRect;
+
         for (int i = 0; i < backgrounds.Length; i++)
         {
-            _uvRect = backgrounds[i].backgroundGO.GetComponent<RawImage>().uvRect;
+            Vector2 offset;
+            offset = backgrounds[i].backgroundGO.material.GetTextureOffset("_MainTex");
             if (backgrounds[i].bgDirection == BackgroundDirections.Horizontal)
-                _uvRect.x += _gameManager.generalSpeed * backgrounds[i].parallax * Time.deltaTime;
+                offset.x += _gameManager.generalSpeed * backgrounds[i].parallax * Time.deltaTime;
             else
-                _uvRect.y += _gameManager.generalSpeed * backgrounds[i].parallax * Time.deltaTime;
-            backgrounds[i].backgroundGO.GetComponent<RawImage>().uvRect = _uvRect;
+                offset.y -= _gameManager.generalSpeed * backgrounds[i].parallax * Time.deltaTime;
+            backgrounds[i].backgroundGO.material.SetTextureOffset("_MainTex", offset);
         }
     }
 }
@@ -30,7 +31,7 @@ public class BackgroundController : MonoBehaviour {
 [System.Serializable]
 public class BackgroundClass
 {
-    public RawImage backgroundGO;
+    public Renderer backgroundGO;
     public float parallax;
     public BackgroundDirections bgDirection;
 }

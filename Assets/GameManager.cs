@@ -9,14 +9,22 @@ public class GameManager : MonoBehaviour {
     public RectTransform canvas;
     public RectTransform deathZone;
 
+    public ParticleSystem obstacleDestructionEffect;
+
     public GameObject gaugeBase;
     public GameObject gaugeArrow;
+    
 
     public Transform topLimitObj;
     public Transform playerTransform;
 
+    public GameZone currentGameZone;
+
     public Text gameOverText;
     public Text coinsCountText;
+    public Text scoreText;
+
+    private bool _invulnerability;
 
     private int _curRunCoins;
     public int CurrentRunCoins
@@ -26,22 +34,35 @@ public class GameManager : MonoBehaviour {
 
     [HideInInspector]
     public float playerHeight;
+
     public float topLimitHeight;
     public float pickupDist;
     public float generalSpeed;
     public float obstacleDist;
 
-    private float _o2amount;
-    public float OxygenAmount
+    private UnityStandardAssets.ImageEffects.BlurOptimized blurComp;
+
+    private int _o2charges;
+    public int OxygenCharges
     {
-        get { return _o2amount; }
+        get { return _o2charges; }
     }
 
-    public const float maxSpeed = 2;
-    public const float minSpeed = 0;
+    public float distanceScore;
+
+    float _maxSpeed;
+    float _minSpeed;
+
+    public float MaxSpeed
+    {
+        get { return _maxSpeed; }
+    }
 
     private const float gaugeRotLimit = -240;
-    private RectTransform _gArrowRect;
+    RectTransform _gArrowRect;
+
+    float savedSpeed;
+    float savedMaxSpeed;
 
     void Start()
     {
@@ -55,45 +76,30 @@ public class GameManager : MonoBehaviour {
             lanes[i] = new LaneClass();
             lanes[i].isFree = true;
         }
-        obstacleDist = Screen.height * 30 / 100;
+        obstacleDist = Screen.height * 35 / 100;
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         wid = deathZone.parent.GetComponent<RectTransform>().rect.width;
         deathZone.sizeDelta = new Vector2(wid, 200);
         deathZone.GetComponent<BoxCollider2D>().size = deathZone.sizeDelta;
-
-        //Initialize current run coint count with 0
+        _maxSpeed = 4f;
+        _minSpeed = 0f;
+        savedMaxSpeed = _maxSpeed;
+        savedSpeed = generalSpeed;
         _curRunCoins = 0;
-        coinsCountText.text = "0";
-
-        _o2amount = 100;
+        _o2charges = 4;
+        blurComp = Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized>();
+        blurComp.blurSize = 0f;
     }
 
     void Update()
     {
-        int i;
-        float _dist;
-
-        generalSpeed -= Time.deltaTime * .008f;
-        generalSpeed = Mathf.Clamp(generalSpeed, minSpeed, maxSpeed);
-        _gArrowRect.localEulerAngles = new Vector3(_gArrowRect.localEulerAngles.x, _gArrowRect.localEulerAngles.y, generalSpeed * gaugeRotLimit / maxSpeed);
-
-        for (i = 0; i < 3; i++)
-        {
-            lanes[i].isFree = true;
-            if (lanes[i].lastSpawn)
-            {
-                _dist = obstacleDist;
-                if (lanes[i].lastSpawn.transform.position.y > (topLimitHeight - _dist - (generalSpeed * 20)))
-                    lanes[i].isFree = false;
-                if (lanes[i].lastSpawn.transform.position.y < (topLimitHeight - canvas.rect.height - 50))
-                {
-                    lanes[0].lastSpawn = null;
-                    lanes[1].lastSpawn = null;
-                    lanes[2].lastSpawn = null;
-                }
-            }
-        }
+        generalSpeed -= Time.deltaTime * (_maxSpeed * 1 / 100);
+        generalSpeed = Mathf.Clamp(generalSpeed, _minSpeed, _maxSpeed);
+        _o2charges = Mathf.Clamp(_o2charges, 0, 4);
+        _gArrowRect.localEulerAngles = new Vector3(_gArrowRect.localEulerAngles.x, _gArrowRect.localEulerAngles.y, generalSpeed * gaugeRotLimit / _maxSpeed);
         playerHeight = playerTransform.position.y;
+        distanceScore += generalSpeed * 2 * Time.deltaTime;
+        scoreText.text = ((int)distanceScore).ToString() + "m";
     }
 
     public void GameOver()
@@ -107,14 +113,52 @@ public class GameManager : MonoBehaviour {
         coinsCountText.text = _curRunCoins.ToString();
     }
 
-    public void O2AmountAdjust(float cnt)
+    public void O2AmountAdjust(int cnt)
     {
-        _o2amount += cnt;
+        _o2charges += cnt;
     }
 
-    public void SetO2AmountTo(float cnt)
+    public void SetO2AmountTo(int cnt)
     {
-        _o2amount = cnt;
+        _o2charges = cnt;
+    }
+
+    public void ObstacleCollision(GameObject _obstacle)
+    {
+        if (_invulnerability)
+        {
+            obstacleDestructionEffect.transform.position = new Vector3(_obstacle.transform.position.x, _obstacle.transform.position.y - 50, -260);
+            obstacleDestructionEffect.Play();
+        }
+        else
+            generalSpeed -= _maxSpeed / 3;
+        //Debug.Log(_maxSpeed);
+    }
+
+    public void AccelerateSpeed()
+    {
+        _invulnerability = true;
+        blurComp.blurSize = 1.5f;
+        savedSpeed = generalSpeed;
+        savedMaxSpeed = _maxSpeed;
+        _maxSpeed = 8;
+        generalSpeed = _maxSpeed;
+    }
+
+    public void ResetAcceleratedSpeed()
+    {
+        generalSpeed = savedSpeed;
+        _maxSpeed = savedMaxSpeed;
+        blurComp.blurSize = 0f;
+        _invulnerability = false;
+    }
+
+    public bool IsFree(LaneClass lane)
+    {
+        if (lane.lastSpawn)
+            if (lane.lastSpawn.transform.position.y > (topLimitHeight - obstacleDist))
+                return false;
+        return true;
     }
 }
 

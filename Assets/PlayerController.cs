@@ -4,14 +4,18 @@ using System.Collections;
 public class PlayerController : MonoBehaviour
 {
     public Transform player;
+    public Positions currentPlayerPos;
+
     private float minDragDistance;  //minimum distance for a swipe
     private float moveDistance;
+
     private Vector3 firstTouchPos;   //First touch position
     private Vector3 lastTouchPos;   //Last touch position
-    private Positions currentPos;
+
+    private Vector3[] states;
+
     //private bool canMove;
     private Animator playerAnimator;
-    private Vector3[] states;
 
     void Start()
     {
@@ -23,7 +27,7 @@ public class PlayerController : MonoBehaviour
         states[(int)Positions.Center] = player.localPosition;
         states[(int)Positions.LeftSide] = player.localPosition - new Vector3(moveDistance, 0, 0);
         states[(int)Positions.RightSide] = player.localPosition + new Vector3(moveDistance, 0, 0);
-        currentPos = Positions.Center;
+        currentPlayerPos = Positions.Center;
     }
 
     void Update()
@@ -41,8 +45,7 @@ public class PlayerController : MonoBehaviour
             {
                 lastTouchPos = touch.position;
             }
-            else if (touch.phase == TouchPhase.Ended)
-            {
+
                 lastTouchPos = touch.position;
                 if (Mathf.Abs(lastTouchPos.x - firstTouchPos.x) > minDragDistance || Mathf.Abs(lastTouchPos.y - firstTouchPos.y) > minDragDistance)
                 {
@@ -50,25 +53,24 @@ public class PlayerController : MonoBehaviour
                     {
                         if ((lastTouchPos.x > firstTouchPos.x))
                         {
-                            if (currentPos == Positions.LeftSide)
+                            if (currentPlayerPos == Positions.LeftSide)
                                 Move(Positions.Center);
-                            else if (currentPos == Positions.Center)
+                            else if (currentPlayerPos == Positions.Center)
                                 Move(Positions.RightSide);
                             //player.GetComponent<Animator>().SetTrigger("GoRight");
                             Debug.Log("Right Swipe");
                         }
                         else
                         {
-                            if (currentPos == Positions.RightSide)
+                            if (currentPlayerPos == Positions.RightSide)
                                 Move(Positions.Center);
-                            else if (currentPos == Positions.Center)
+                            else if (currentPlayerPos == Positions.Center)
                                 Move(Positions.LeftSide);
                            // player.GetComponent<Animator>().SetTrigger("GoLeft");
                             Debug.Log("Left Swipe");
                         }
                     }
                 }
-            }
         }
     }
 
@@ -77,11 +79,11 @@ public class PlayerController : MonoBehaviour
         float timeDelta = .1f;
         int nextDir;
 
-        if ((int)dir > (int)currentPos)
+        if ((int)dir > (int)currentPlayerPos)
             nextDir = 1;
         else
             nextDir = -1;
-        currentPos = dir;
+        currentPlayerPos = dir;
         StartCoroutine(SmoothMove(states[(int)dir], timeDelta, nextDir));
     }
 

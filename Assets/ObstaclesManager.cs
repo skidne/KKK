@@ -4,9 +4,16 @@ public class ObstaclesManager : MonoBehaviour
 {
     public Pool[] obstaclePools;
 
+    public Transform obstacleParent;
+
     public GameObject potato;
     public GameObject poisonedPotato;
     public GameObject o2cylinder;
+
+    private float checkDelay;
+    private float checkCD;
+
+    private float potatoDelay;
 
     private int[,] spawnPatterns = { {1, 0, 0},
                                      {0, 1, 0},
@@ -21,32 +28,47 @@ public class ObstaclesManager : MonoBehaviour
     {
         _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         for (int i = 0; i < obstaclePools.Length; i++)
-            PoolManager.instance.CreatePool(obstaclePools[i].prefab, obstaclePools[i].amount, _gameManager.canvas.transform);
+            PoolManager.instance.CreatePool(obstaclePools[i].prefab, obstaclePools[i].amount, obstacleParent);
+        PoolManager.instance.CreatePool(potato, 200, obstacleParent);
+        PoolManager.instance.CreatePool(o2cylinder, 10, obstacleParent);
+        PoolManager.instance.CreatePool(poisonedPotato, 10, obstacleParent);
         PoolManager.instance.SortByAmount(ref obstaclePools);
+        potatoDelay = Screen.height * 10 / 100;
+        checkDelay = 0.5f;
     }
 
     void Update()
     {
         int howToSpawn;
+
+        if (_gameManager.currentGameZone == GameZone.Obstacles)
+        {
+            howToSpawn = Random.Range(0, 6);
+            checkCD -= Time.deltaTime;
+            if (CanSpawnWave(howToSpawn) && checkCD <= 0)
+                SpawnWave(howToSpawn);
+        }
+    }
+
+    void SpawnWave(int pattern)
+    {
         int i;
 
-        howToSpawn = Random.Range(0, 6);
-        Debug.Log("0WTF????");
-        if (CanSpawnWave(howToSpawn))
+        //Debug.Break();
+        //Debug.Log("----------------");
+        for (i = 0; i < 3; i++)
         {
-            Debug.Log("1WTF????");
-            for (i = 0; i < 3; i++)
+            if (spawnPatterns[pattern, i] == 1)
             {
-                if (spawnPatterns[howToSpawn, i] == 1)
-                {
-                    Debug.Log("2WTF????");
-                    //  Debug.Log("jmm");
-                    SpawnOnLane(i);
-                }
-                else
-                    ProcessZero(i);
+                SpawnOnLane(i);
+            }
+            else
+            {
+                ProcessZero(i);
             }
         }
+        checkCD = checkDelay;
+       // Debug.Log("----------------");
     }
 
     void SpawnOnLane(int l)
@@ -55,6 +77,8 @@ public class ObstaclesManager : MonoBehaviour
 
         whatToSpawn = GetRandomPool();
         _gameManager.lanes[l].lastSpawn = PoolManager.instance.ReuseObject(obstaclePools[whatToSpawn].prefab, _gameManager.spawnPoints[l].position, Quaternion.identity);
+       // Debug.Log("Order: " + debugOrder + "; Name: " + _gameManager.lanes[l].lastSpawn.name);
+        //Debug.Break();
     }
 
     void ProcessZero(int l)
@@ -63,19 +87,26 @@ public class ObstaclesManager : MonoBehaviour
         float whatToSpawn;
 
         zeroSpawn = Random.value;
+       // Debug.Log("I'm here");
         if (zeroSpawn >= .6f)
         {
-            whatToSpawn = Random.value;
-            if (whatToSpawn <= .2f)
+           // Debug.Log("Now here");
+            if (_gameManager.IsFree(_gameManager.lanes[l]))
             {
-                SpawnCylinder(l);
-                //Spawn cylinder
-            }
-            else
-            {
-                if (_gameManager.lanes[l].isFree)
+                //Debug.Log("And now here");
+                whatToSpawn = Random.value;
+                if (whatToSpawn <= .2f)
+                {
+                    SpawnCylinder(l);
+                    //Spawn cylinder
+                }
+                else
+                {
                     SpawnPotatos(l);
-                //Spawn potato
+                    //Spawn potato
+                }
+                //Debug.Log(debugOrder + ": " + _gameManager.lanes[l].lastSpawn.name);
+                //Debug.Break();
             }
         }
     }
@@ -98,11 +129,11 @@ public class ObstaclesManager : MonoBehaviour
         for (i = 0; i < nr - 1; i++)
         {
             poisonChance = Random.value;
-            if (poisonChance < .7f || poisonChance > .8f)
+            if (poisonChance > .05f)
                 PoolManager.instance.ReuseObject(potato, nextPotatoPos, Quaternion.identity);
             else
                 PoolManager.instance.ReuseObject(poisonedPotato, nextPotatoPos, Quaternion.identity);
-            nextPotatoPos.y += 80;
+            nextPotatoPos.y += potatoDelay;
         }
         _gameManager.lanes[whereToSpawn].lastSpawn = PoolManager.instance.ReuseObject(potato, nextPotatoPos, Quaternion.identity);
     }
@@ -110,78 +141,38 @@ public class ObstaclesManager : MonoBehaviour
     bool CanSpawnWave(int patternIndex)
     {
         int i;
-        bool _canSpawn;
-
-        _canSpawn = true;
+        //Debug.Log("/*CHECK IF CAN SPAWN*/");
+       // Debug.Log(_gameManager.lanes.Length);
         for (i = 0; i < _gameManager.lanes.Length; i++)
         {
+            //Debug.Log("i = " + i);
             if (_gameManager.lanes[i].lastSpawn != null)
-            {
-                if (!_gameManager.lanes[i].isFree && _gameManager.lanes[i].lastSpawn.CompareTag("Obstacle"))
-                    _canSpawn = false;
-            }
+                //if (_gameManager.lanes[i].lastSpawn.transform.position.y > (_gameManager.topLimitHeight - _gameManager.obstacleDist) && _gameManager.lanes[i].lastSpawn.CompareTag("Obstacle"))
+                if (!_gameManager.IsFree(_gameManager.lanes[i]) && _gameManager.lanes[i].lastSpawn.tag == "Obstacle")
+                {
+                 //   Debug.Log("/CAN'T SPAWN CUZ OF OBSTACLE DISTANCE\\");
+                    return false;
+                }
         }
-        Debug.Log("01: " + _canSpawn);
-        if (_canSpawn == true)
+        if (!CheckIntersections(patternIndex))
         {
-            //if ()
-            if (CheckIntersections(patternIndex))
-            {
-                _canSpawn = true;
-            }
-            else
-                _canSpawn = false;
+          //  Debug.Log("/CAN'T SPAWN CUZ OF INTERSECTIONS\\");
+            return false;
         }
-        Debug.Log("02: " + _canSpawn + " | " + CheckIntersections(patternIndex));
-        return _canSpawn;
+      //  Debug.Log("/*SOMEHOW CAN SPAWN*\\");
+        return true;
     }
 
     bool CheckIntersections(int pattern)
     {
         int i;
-        bool goodIntersetction;
 
-        goodIntersetction = true;
         for (i = 0; i < 3; i++)
         {
-            if (spawnPatterns[pattern, i] == 1)
-            {
-                if (_gameManager.lanes[i].lastSpawn != null)
-                {
-                    if (!_gameManager.lanes[i].isFree && (_gameManager.lanes[i].lastSpawn.CompareTag("Potato") || _gameManager.lanes[i].lastSpawn.CompareTag("PoisonedPotato")))
-                        goodIntersetction = false;
-                }
-            }
+            if (spawnPatterns[pattern, i] == 1 && (_gameManager.lanes[i].lastSpawn && !_gameManager.lanes[i].lastSpawn.CompareTag("Obstacle")) && !_gameManager.IsFree(_gameManager.lanes[i]))
+                return false;
         }
-        return goodIntersetction;
-        /*
-        goodIntersetction = false;
-        for (i = 0; i < 3; i++)
-        {
-            Debug.Log("Entered in checker");
-            if (spawnPatterns[pattern, i] == 0)
-            {
-                if (_gameManager.lanes[i].lastSpawn != null)
-                {
-                    if (_gameManager.lanes[i].isFree && (_gameManager.lanes[i].lastSpawn.CompareTag("Potato") || _gameManager.lanes[i].lastSpawn.CompareTag("PoisonedPotato")))
-                    {
-                        Debug.Log("1: Zdesi");
-                        goodIntersetction = true;
-                    }
-                    else
-                    {
-                        if (_gameManager.lanes[i].isFree)
-                            goodIntersetction = true;
-                    }
-                }
-                else
-                {
-                    Debug.Log("2 Zdesi");
-                    goodIntersetction = true;
-                }
-            }
-        }
-        return goodIntersetction;*/
+        return true;
     }
 
     int GetRandomPool()
@@ -204,82 +195,3 @@ public class ObstaclesManager : MonoBehaviour
         return (i);
     }
 }
-
-/*
-public class ObstaclesManager : MonoBehaviour {
-
-    public Pool[] obstaclePools;
-    private GameManager _gameManager;
-
-    void Start()
-    {
-        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        Transform _mainCanvas = GameObject.Find("MainCanvas").transform;
-        for (int i = 0; i < obstaclePools.Length; i++)
-        {
-            if (!obstaclePools[i].parent)
-                obstaclePools[i].parent = _mainCanvas;
-            PoolManager.instance.CreatePool(obstaclePools[i].prefab, obstaclePools[i].amount, obstaclePools[i].parent);
-        }
-        PoolManager.instance.SortByAmount(ref obstaclePools);
-    }
-
-    void Update()
-    {
-        int whereToSpawn;
-        int whatToSpawn;
-
-        whereToSpawn = Random.Range(0, 3);
-        if (whereToSpawn > 2) whereToSpawn = 2;
-        whatToSpawn = GetRandomPool();
-        //_cd -= Time.deltaTime;
-        if (CheckSpawnPosibility(whereToSpawn))
-            if (PoolManager.instance.CanPool(obstaclePools[whatToSpawn].prefab))
-                if (_gameManager.lanes[whereToSpawn] != null)
-                    _gameManager.lanes[whereToSpawn].lastSpawn = PoolManager.instance.ReuseObject(obstaclePools[whatToSpawn].prefab, _gameManager.spawnPoints[whereToSpawn].position, Quaternion.identity);
-    }
-
-    bool CheckSpawnPosibility(int l)
-    {
-        bool _canSpawn;
-        bool _selectedLane;
-        bool _neighbors;
-        int i;
-
-        _canSpawn = false;
-        _selectedLane = false;
-        _neighbors = false;
-        if (_gameManager.lanes[l].isFree)
-            _selectedLane = true;
-        for (i = 0; i < 3; i++)
-            if (i != l)
-            {
-                ;
-                if (_gameManager.lanes[i].isFree)
-                    _neighbors = true;
-            }
-        if (_selectedLane && _neighbors)
-            _canSpawn = true;
-        return _canSpawn;
-    }
-
-    int GetRandomPool()
-    {
-        int randVal;
-        int sum;
-        int i;
-
-        sum = 0;
-        for (i = 0; i < obstaclePools.Length; i++)
-            sum += obstaclePools[i].amount;
-        randVal = Random.Range(0, sum);
-        sum = 0;
-        for (i = 0; i < obstaclePools.Length - 1; i++)
-        {
-            sum += obstaclePools[i].amount;
-            if (randVal < sum)
-                break ;
-        }
-        return (i);
-    }
-}*/

@@ -2,14 +2,10 @@
 using System.Collections;
 
 public class PickUpsManager : MonoBehaviour {
-
+    /*
     public GameObject potato;
     public GameObject poisonedPotato;
     public GameObject o2cylinder;
-    private float potatoSpawnDelay;
-    private float potatoSpawnCD;
-    private float cylinderSpawnCD;
-    private float cylinderSpawnDelay;
     private GameManager _gameManager;
 
     void Start()
@@ -18,8 +14,8 @@ public class PickUpsManager : MonoBehaviour {
         PoolManager.instance.CreatePool(potato, 200, _gameManager.canvas);
         PoolManager.instance.CreatePool(o2cylinder, 10, _gameManager.canvas);
         PoolManager.instance.CreatePool(poisonedPotato, 10, _gameManager.canvas);
-        cylinderSpawnCD = 10;
-        potatoSpawnCD = 1;
+        //cylinderSpawnCD = 10;
+        //potatoSpawnCD = 1;
     }
     /*
     void Update()
